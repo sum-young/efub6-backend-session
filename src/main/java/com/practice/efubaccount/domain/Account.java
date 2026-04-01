@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account {
 
-//    @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
 
@@ -35,14 +35,16 @@ public class Account {
 
     @Builder
     public Account(String email, String password, String nickname) {
-
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
     }
 
     public void updateBio(String bio) {
-
+        this.bio = bio;
     }
 
     public void changeStatus(AccountStatus status) {
-
+        this.status = status;
     }
 }
