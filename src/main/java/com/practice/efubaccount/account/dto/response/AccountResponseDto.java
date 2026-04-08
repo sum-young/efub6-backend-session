@@ -22,4 +22,6 @@ public class AccountResponseDto {
                 .bio(account.getBio())
                 .build();
     }
+
+
 }

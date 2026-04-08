@@ -7,7 +7,7 @@ public class ExampleDto {
     private String password;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -15,7 +15,7 @@ public class ExampleDto {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -23,7 +23,7 @@ public class ExampleDto {
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
