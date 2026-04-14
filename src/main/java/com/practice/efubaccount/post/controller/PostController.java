@@ -1,8 +1,6 @@
 package com.practice.efubaccount.post.controller;
 
 import com.practice.efubaccount.post.dto.request.PostCreateRequest;
-//import com.practice.efubaccount.post.dto.request.PostUpdateRequest;
-//import com.practice.efubaccount.post.dto.response.PostResponse;
 import com.practice.efubaccount.post.dto.request.PostUpdateRequest;
 import com.practice.efubaccount.post.dto.response.PostListResponse;
 import com.practice.efubaccount.post.dto.response.PostResponse;

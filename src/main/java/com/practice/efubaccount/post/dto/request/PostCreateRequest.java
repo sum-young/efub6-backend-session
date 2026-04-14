@@ -17,7 +17,6 @@ public class PostCreateRequest{
 
     @Size(min=5, max=500, message = "내용은 5자이상 500자이하로 입력해야합니다.")
     private String content;
-
     public Post toEntity(Account account) {
         return Post.builder()
                 .title(title)
