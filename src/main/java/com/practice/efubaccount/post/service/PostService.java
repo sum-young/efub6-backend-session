@@ -1,7 +1,7 @@
 package com.practice.efubaccount.post.service;
 
 import com.practice.efubaccount.account.domain.Account;
-import com.practice.efubaccount.account.service.AccountsService;
+import com.practice.efubaccount.account.service.AccountService;
 import com.practice.efubaccount.global.exception.CustomException;
 import com.practice.efubaccount.global.exception.ErrorCode;
 import com.practice.efubaccount.post.domain.Post;
@@ -22,12 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final AccountsService accountsService;
+    private final AccountService accountService;
     private final PostRepository postRepository;
 
     @Transactional
     public Long createPost(PostCreateRequest request) {
-        Account writerAccount = accountsService.findByAccountId(request.getAccountId());
+        Account writerAccount = accountService.findByAccountId(request.getAccountId());
 
         Post newPost = request.toEntity(writerAccount);
         postRepository.save(newPost);
@@ -57,7 +57,7 @@ public class PostService {
     @Transactional
     public void updatePostContent(Long postId, Long accountId, @Valid PostUpdateRequest request) {
         Post post = findByPostId(postId);
-        Account account = accountsService.findByAccountId(accountId);
+        Account account = accountService.findByAccountId(accountId);
 
         authorizePostWriter(post,account);
         post.changeContent(request.content());
@@ -66,7 +66,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId, Long accountId) {
         Post post = findByPostId(postId);
-        Account account = accountsService.findByAccountId(accountId);
+        Account account = accountService.findByAccountId(accountId);
 
         authorizePostWriter(post, account);
         postRepository.delete(post);

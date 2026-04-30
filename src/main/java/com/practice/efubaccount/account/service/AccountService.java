@@ -6,7 +6,7 @@ import com.practice.efubaccount.account.dto.request.BioUpdateRequestDto;
 import com.practice.efubaccount.account.dto.request.CreateAccountRequestDto;
 import com.practice.efubaccount.account.domain.Account;
 import com.practice.efubaccount.account.domain.AccountStatus;
-import com.practice.efubaccount.account.repository.AccountsRepository;
+import com.practice.efubaccount.account.repository.AccountRepository;
 import com.practice.efubaccount.global.exception.CustomException;
 import com.practice.efubaccount.global.exception.ErrorCode;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AccountsService {
+public class AccountService {
 
-    private final AccountsRepository accountsRepository;
+    private final AccountRepository accountsRepository;
 
     // 회원 단건 조회
     public AccountResponseDto getAccount(Long accountId) {

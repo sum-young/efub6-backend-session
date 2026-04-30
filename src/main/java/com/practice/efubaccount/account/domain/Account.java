@@ -1,12 +1,11 @@
 package com.practice.efubaccount.account.domain;
 
-//import com.practice.efubaccount.comment.domain.Comment;
-
+import com.practice.efubaccount.comment.domain.Comment;
 import jakarta.persistence.*;
 import lombok.*;
 
-//import java.util.ArrayList;
-//import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,9 +37,9 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountStatus status = AccountStatus.ACTIVE;
 
-//    // 연관관계의 Owner 설정
-//    @OneToMany(mappedBy = "writer",cascade = CascadeType.ALL,orphanRemoval = true)
-//    private List<Comment> commentList = new ArrayList<>();
+    // 연관관계의 Owner 설정
+    @OneToMany(mappedBy = "writer",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
 
     @Builder
     public Account(String email, String password, String nickname) {
