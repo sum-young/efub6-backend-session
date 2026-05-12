@@ -24,7 +24,6 @@ public class AccountController {
     @GetMapping("/{accountId}")
     public ResponseEntity<AccountResponseDto> getAccount(@PathVariable("accountId") Long accountId) {
         AccountResponseDto responseDto = accountService.getAccount(accountId);
-
         return ResponseEntity.ok(responseDto);
     }
 
@@ -32,7 +31,6 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<CreateAccountResponseDto> createAccount(@RequestBody CreateAccountRequestDto requestDto) {
         CreateAccountResponseDto responseDto = accountService.createAccount(requestDto);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -41,7 +39,6 @@ public class AccountController {
     public ResponseEntity<AccountResponseDto> updateAccount(@PathVariable("accountId") Long accountId,
                                                             @RequestBody BioUpdateRequestDto requestDto) {
         AccountResponseDto responseDto = accountService.updateAccount(accountId, requestDto);
-
         return ResponseEntity.ok(responseDto);
     }
 
@@ -49,11 +46,9 @@ public class AccountController {
     // 계정 논리적 삭제(탈퇴): PATCH /accounts/{accountId}
     @PatchMapping("/{accountId}")
     public ResponseEntity<Map<String, String>> deleteAccount(@PathVariable("accountId") Long accountId) {
-        accountService.deleteAccount(accountId);
-
+        accountService.deleteAccount(accountId);  // 상태 변경만 수행
         Map<String, String> response = new HashMap<>();
-        response.put("message", "비활성화 성공했습니다.");
-
+        response.put("message", "성공적으로 탈퇴되었습니다.");
         return ResponseEntity.ok(response);
     }
 
@@ -61,10 +56,8 @@ public class AccountController {
     @DeleteMapping("/{accountId}")
     public ResponseEntity<Map<String, String>> physicalDeleteAccount(@PathVariable("accountId") Long accountId) {
         accountService.physicalDeleteAccount(accountId);
-
         Map<String, String> response = new HashMap<>();
         response.put("message", "성공적으로 탈퇴되었습니다.");
-
         return ResponseEntity.ok(response);
     }
 }
