@@ -23,7 +23,7 @@ public class PostCommentController {
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<Void> createComment(@PathVariable("postId") Long postId,
-                                              @RequestBody CommentRequest request) {
+                                              @RequestBody @Valid CommentRequest request) {
         Long id = commentService.createComment(postId,request);
         return ResponseEntity.created(URI.create("/posts/"+postId+"/comments/"+id)).build();
     }
