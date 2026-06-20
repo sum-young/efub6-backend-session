@@ -43,7 +43,7 @@ public class PostCommentController {
         return ResponseEntity.ok(response);
     }
 
-    // 댓글 삭제
+    // 댓글 삭제: 주석 수정 Deploy test
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable("commentId") Long commentId,
                                               @RequestHeader("Auth-id") Long accountId) {
