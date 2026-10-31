@@ -171,8 +171,16 @@ jobs:
             echo "application-ci.yml already exists"
           fi
 
+      # 테스트 실패 시 원인 파악용으로 Caused by 줄과 마지막 로그를 출력한다.
       - name: Test application
-        run: ./gradlew test
+        run: |
+          ./gradlew test -i > results/test.log 2>&1 || {
+            echo "===== Caused by lines ====="
+            grep -n "Caused by" results/test.log | tail -30
+            echo "===== Last 60 lines ====="
+            tail -n 60 results/test.log
+            exit 1
+          }
         env:
           SPRING_PROFILES_ACTIVE: test
 
@@ -250,7 +258,7 @@ jobs:
       - name: Save summary with assignment file name
         if: always()
         run: |
-          if [[ -f results/summary.json ]]; then
+          if [[ -f results/summary.json && -n "$SUMMARY_NAME" ]]; then
             cp results/summary.json "results/$SUMMARY_NAME"
           fi
 
@@ -262,6 +270,7 @@ jobs:
           path: |
             results/summary.json
             results/summary-*.json
+            results/test.log
             results/application.log
             results/seed.log
             build/reports/tests/test/
