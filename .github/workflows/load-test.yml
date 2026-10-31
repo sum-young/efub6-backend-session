@@ -129,6 +129,48 @@ jobs:
           mkdir -p results
           chmod +x gradlew
 
+      # gitignore 때문에 저장소에 없는 설정 파일을 CI에서 만든다.
+      - name: Create test config
+        run: |
+          mkdir -p src/test/resources
+          cat > src/test/resources/application-test.yml <<'EOF'
+          spring:
+            datasource:
+              url: jdbc:h2:mem:test;MODE=MySQL
+              driver-class-name: org.h2.Driver
+              username: sa
+              password:
+            jpa:
+              hibernate:
+                ddl-auto: create-drop
+
+          jwt:
+            secretKey: dGVzdC1vbmx5LXNlY3JldC1rZXktZm9yLWp1bml0LXRlc3RpbmctZG8tbm90LXVzZS1pbi1wcm9k
+          EOF
+
+      # 저장소에 application-ci.yml이 이미 있으면 그대로 쓰고, 없을 때만 만든다.
+      - name: Create ci config if missing
+        run: |
+          mkdir -p src/main/resources
+          if [[ ! -f src/main/resources/application-ci.yml ]]; then
+            cat > src/main/resources/application-ci.yml <<'EOF'
+          spring:
+            datasource:
+              url: ${DB_URL}
+              username: ${DB_USERNAME}
+              password: ${DB_PASSWORD}
+            jpa:
+              hibernate:
+                ddl-auto: update
+
+          jwt:
+            secretKey: dGVzdC1vbmx5LXNlY3JldC1rZXktZm9yLWp1bml0LXRlc3RpbmctZG8tbm90LXVzZS1pbi1wcm9k
+          EOF
+            echo "Created application-ci.yml"
+          else
+            echo "application-ci.yml already exists"
+          fi
+
       - name: Test application
         run: ./gradlew test
         env:
@@ -181,13 +223,16 @@ jobs:
             hot-row-before)
               echo "K6_SCRIPT=load-tests/hot-row.js" >> "$GITHUB_ENV"
               echo "HOT_ROW_MODE=single" >> "$GITHUB_ENV"
+              echo "SUMMARY_NAME=summary-hot-row-before.json" >> "$GITHUB_ENV"
               ;;
             hot-row-after)
               echo "K6_SCRIPT=load-tests/hot-row.js" >> "$GITHUB_ENV"
               echo "HOT_ROW_MODE=sharded" >> "$GITHUB_ENV"
+              echo "SUMMARY_NAME=summary-hot-row-after.json" >> "$GITHUB_ENV"
               ;;
             generic)
               echo "K6_SCRIPT=load-tests/http.js" >> "$GITHUB_ENV"
+              echo "SUMMARY_NAME=summary-paginated-posts.json" >> "$GITHUB_ENV"
               ;;
             *)
               echo "Unknown scenario: $SCENARIO"
@@ -201,6 +246,14 @@ jobs:
             --summary-export=results/summary.json \
             "$K6_SCRIPT"
 
+      # 과제에서 요구하는 파일명으로도 저장한다.
+      - name: Save summary with assignment file name
+        if: always()
+        run: |
+          if [[ -f results/summary.json ]]; then
+            cp results/summary.json "results/$SUMMARY_NAME"
+          fi
+
       - name: Upload load-test artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -208,9 +261,9 @@ jobs:
           name: k6-${{ inputs.scenario || 'generic' }}-${{ github.run_number }}
           path: |
             results/summary.json
+            results/summary-*.json
             results/application.log
             results/seed.log
             build/reports/tests/test/
           if-no-files-found: warn
           retention-days: 14
-
