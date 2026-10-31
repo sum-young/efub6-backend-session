@@ -130,6 +130,7 @@ jobs:
           chmod +x gradlew
 
       # gitignore 때문에 저장소에 없는 설정 파일을 CI에서 만든다.
+      # sql.init.mode: never → 비어 있는 data.sql 때문에 컨텍스트 로딩이 실패하는 것을 막는다.
       - name: Create test config
         run: |
           mkdir -p src/test/resources
@@ -143,16 +144,14 @@ jobs:
             jpa:
               hibernate:
                 ddl-auto: create-drop
+            sql:
+              init:
+                mode: never
 
           jwt:
             secretKey: dGVzdC1vbmx5LXNlY3JldC1rZXktZm9yLWp1bml0LXRlc3RpbmctZG8tbm90LXVzZS1pbi1wcm9k
           EOF
 
-          # 내용이 비어 있는 data.sql은 Spring Boot 시작 시 에러를 내므로 제거한다.
-          if [[ -f src/test/resources/data.sql && ! -s src/test/resources/data.sql ]]; then
-            rm src/test/resources/data.sql
-            echo "Removed empty data.sql"
-          fi
       # 저장소에 application-ci.yml이 이미 있으면 그대로 쓰고, 없을 때만 만든다.
       - name: Create ci config if missing
         run: |
